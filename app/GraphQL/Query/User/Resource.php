@@ -1,29 +1,25 @@
 <?php
 
-namespace App\GraphQL\Query;
+namespace App\GraphQL\Query\User;
 
 use App\Models\User;
+use App\Services\UserService;
 use Closure;
 use Rebing\GraphQL\Support\Facades\GraphQL;
 use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Type\Definition\Type;
 use Rebing\GraphQL\Support\Query;
 
-class UserQuery extends Query
+class Resource extends Query
 {
-    private User $user;
-    public function __construct(User $user)
-    {
-        $this->user = $user;
-    }
 
     protected $attributes = [
-        'name' => "users",
+        'name' => "user",
     ];
 
     public function type(): Type
     {
-        return Type::nonNull(Type::listOf(Type::nonNull(GraphQL::type('User'))));
+        return Type::nonNull(GraphQL::type('UserType'));
     }
 
     public function args(): array
@@ -46,23 +42,9 @@ class UserQuery extends Query
 
     public function resolve($root, array $args, $context, ResolveInfo $resolveInfo, Closure $getSelectFields)
     {
-        if(isset($args['id'])){
-            $query = $this->user->find($args['id']);
-            return $query;
-        }
-
-        if(isset($args['name'])){
-            $name = $args['name'];
-            $query = $this->user->where('name', "LIKE", "%{$name}%")->get();
-            return $query;
-        }
-
-        if(isset($args['email'])){
-            $query = $this->user->where('email', $args['email'])->get();
-            return $query;
-        }
-
-        $query = $this->user->all();
-        return $query;
+        $id = isset($args['id']) ? $args['id'] : null;
+        $userService = new UserService;
+        $user = $userService->resource($id);
+        return $user;
     }
 }

@@ -1,6 +1,6 @@
 <?php 
 
-namespace App\GraphQL\Types;
+namespace  App\GraphQL\Type;
 
 use App\Models\User;
 use Graphql\Type\Definition\Type;
@@ -9,7 +9,7 @@ use Rebing\GraphQL\Support\Type as GraphQLType;
 class UserType extends GraphQLType {
 
     protected $attributes = [
-        'name' => "User",
+        'name' => "UserType",
         'description' => "A User",
         'model' => User::class,
     ];

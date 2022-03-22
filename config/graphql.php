@@ -1,7 +1,11 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
+use App\GraphQL\Mutation;
+use App\GraphQL\Query;
+use App\GraphQL\Type;
+use App\GraphQL\Input;
 return [
     'route' => [
         // The prefix for routes; do NOT use a leading slash!
@@ -74,14 +78,26 @@ return [
     'schemas' => [
         'default' => [
             'query' => [
-                App\GraphQL\Query\UserQuery::class,
+                'users' => Query\User\Collection::class,
+                'user' => Query\User\Resource::class,
             ],
             'mutation' => [
-                // ExampleMutation::class,
+                'upsertUser' => Mutation\User\UpsertMutation::class,
+                'deleteUser' => Mutation\User\DeleteMutation::class
             ],
             // The types only available in this schema
             'types' => [
-                App\GraphQL\Types\UserType::class,
+
+                // Basic Type
+                'Sort' => Input\Basic\Sort::class,
+
+                'UserType' => Type\UserType::class,
+
+                // Input Type
+                'UserInput' => Input\User\Input::class,
+
+                // Filter Type
+                'UserFilter' => Input\User\Filter::class
             ],
 
             // Laravel HTTP middleware
